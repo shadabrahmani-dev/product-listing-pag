@@ -1,0 +1,74 @@
+<div class="container">
+  <div class="search-container">
+    <input
+      type="text"
+      class="search-input"
+      [(ngModel)]="searchQuery"
+      (input)="onSearchInput()"
+      placeholder="Search products..."
+    />
+    <button *ngIf="searchQuery" class="clear-search" (click)="clearSearch()">
+      ✕
+    </button>
+    <div
+      class="suggestions"
+      *ngIf="showSuggestions && filteredProducts.length > 0"
+    >
+      <div
+        class="suggestion-item"
+        *ngFor="let product of filteredProducts.slice(0, 5)"
+        (click)="selectSuggestion(product)"
+      >
+        {{ product.name }}
+      </div>
+    </div>
+  </div>
+
+  <div class="products-grid">
+    <div class="product-card" *ngFor="let product of displayedProducts">
+      <img
+        [src]="product.imageUrl"
+        [alt]="product.name"
+        class="product-image"
+      />
+      <div class="product-title">{{ product.name }}</div>
+      <div class="product-price">${{ product.price.toFixed(2) }}</div>
+      <div class="product-category">{{ product.category }}</div>
+      <p>{{ product.description }}</p>
+    </div>
+  </div>
+
+  <div class="container" *ngIf="filteredProducts.length == 0">
+    <h1>No Results Found</h1>
+    <p>Sorry, we couldn't find any results for your search.</p>
+    <a href="/" class="btn">Go Back Home</a>
+  </div>
+  <ng-container *ngIf="filteredProducts.length > 0">
+    <div class="pagination">
+      <button
+        class="page-button"
+        [disabled]="currentPage === 1"
+        (click)="setPage(currentPage - 1)"
+      >
+        Previous
+      </button>
+
+      <button
+        class="page-button"
+        [class.active]="currentPage === i + 1"
+        *ngFor="let _ of [].constructor(totalPages); let i = index"
+        (click)="setPage(i + 1)"
+      >
+        {{ i + 1 }}
+      </button>
+
+      <button
+        class="page-button"
+        [disabled]="currentPage === totalPages"
+        (click)="setPage(currentPage + 1)"
+      >
+        Next
+      </button>
+    </div>
+  </ng-container>
+</div>
