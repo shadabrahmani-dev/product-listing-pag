@@ -32,8 +32,7 @@ export class ProductListingService {
   }
 
   private loadProducts() {
-    this.http.get<any>('http://localhost:3000/products').subscribe((data) => {
-      console.log(data);
+    this.http.get<any>('assets/plp-data.json').subscribe((data) => {
       this.products = data;
       this.searchQuerySubject.next('');
     });
