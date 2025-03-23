@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { PRODUCT_DETAILS } from '../plp.data';
 export interface Product {
   id: number;
   name: string;
@@ -32,10 +33,20 @@ export class ProductListingService {
   }
 
   private loadProducts() {
-    this.http.get<any>('assets/plp-data.json').subscribe((data) => {
-      this.products = data;
-      this.searchQuerySubject.next('');
-    });
+    // API getting failed due to Json server not deplyed on vercel, However, the api will work on local.
+    // In case of api failure on vercel, getting the locally available data
+    this.http.get<any>('http://localhost:3000/products').subscribe(
+      (data) => {
+        this.products = data;
+        this.searchQuerySubject.next('');
+      },
+      (error) => {
+        // If error in API , fetch Data locally
+        if (error) {
+          this.products = PRODUCT_DETAILS.products;
+        }
+      }
+    );
   }
 
   updateSearchQuery(query: string) {
